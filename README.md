@@ -125,7 +125,7 @@ async function fetchUser(id: number): Promise<User> {
 ```
 
 A common misconception is to treat such schema as both an interface and a validator,
-but they are not the same thing. Of course, these libraries are trying to combine these two things, but it's better to treat them separately, as it helps starting off simple with just interfaces and then adding validation when you need **actually** it, rather than trying to jump into complexity straight away, ending up with a very complex and hard to maintain codebase.
+but they are not the same thing. Of course, these libraries are trying to combine these two things, but it's better to treat them separately, as it helps starting off simple with just interfaces and then adding validation when you **actually** need it, rather than trying to jump into complexity straight away, ending up with a very complex and hard to maintain codebase.
 
 Such schema is universal for both consumer and provider:
 a provider (e.g. backend) defines object schemas manually or via Decorators,
@@ -138,7 +138,7 @@ a consumer (e.g. frontend) infers or generates types from the schemas, creating 
 This can be healed with _annotating each property as nullish_, which leads to ... (read in the previous section).
 Another cure is to define what is tolerable for your app and what is vital.
 It's a good balance between strict and lazy validation, but it introduces inconsistencies between services types.
-But it requires higher discipline, attention to types, good documentation and folder structure to avoid confusion.
+And it requires higher discipline, attention to types, good documentation and folder structure to avoid confusion.
 
 ### Best Practices
 
@@ -210,22 +210,36 @@ Look at [`BodyTypeConverter`](./api/BodyTypeConverter.ts) for a more elaborate i
 
 ## File Upload Progress
 
-Uploading files introduces unique challenges: progress feedback, multipart encoding, and size limits.
+Historically, it's been possible only via old XHR API, but nowadays we have streams support for `fetch` too.
 
-### Outline
+Theory is simple: send data in chunks (raw bytes) and then devide sent bytes by total (sent/total) and you get normalized progress (a number 0..1).
 
-- **Progress tracking** — using `XMLHttpRequest` `upload.onprogress` or `fetch` with a `ReadableStream`
-  - Wrapping `fetch` to report bytes sent vs total
-  - Percentage calculation and throttled callbacks
-- **Multipart encoding** — `FormData` with `Blob`/`File` entries
-  - Auto-detection of file fields vs regular fields
-  - Content-Type boundary handling
-- **Upload cancellation** — `AbortController` wired to a cancel button
-- **Retry for failed chunks** — resumable uploads with range headers
-- **Progress in the facade API**
-  - `upload(resource, file, { onProgress })` callback pattern
-  - Returning `{ promise, cancel }` tuple
-- **Preview generation** — creating object URLs from local files before upload
+```ts
+async function uploadWithFetchStream(url: URL | string, file: File) {
+  let bytesUploaded = 0
+
+  const trackingStream = new TransformStream({
+    transform(chunk, controller) {
+      bytesUploaded += chunk.byteLength;
+      console.log(`Upload Progress: ${Math.round((bytesUploaded / file.size) * 100)}%`);
+      controller.enqueue(chunk);
+    }
+  });
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": file.type },
+    body: file.stream().pipeThrough(trackingStream),
+    duplex: "half" // Required by spec when passing a stream body
+  })
+
+  return await response.json()
+}
+```
+
+It repeats what you can do with XHR and usually it's enough.
+
+However, it gets tricky when you need to make it resumable since it requires some handling from backend side too.
 
 ## Enhancing `fetch` Instead of Replacing It
 
