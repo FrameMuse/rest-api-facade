@@ -15,4 +15,5 @@ A facade is a single entry point that hides the mess behind it. In API design, a
 ## Pages
 
 - [Patterns](/patterns) - the shapes an API facade can take
+- [Cheatsheet](/cheatsheet) - condensed lookup version of the handbook
 - [404](/404) - how not-found pages work with this site
