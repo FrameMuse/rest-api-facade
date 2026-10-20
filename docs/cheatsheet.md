@@ -1,6 +1,6 @@
 # API Facade Cheatsheet
 
-Condensed lookup for the API facade pattern. Each section stands on its own: one idea, one snippet, one table. For rationale, tradeoffs and bad-vs-good examples read [the handbook](https://github.com/FrameMuse/api-facade/blob/main/README.md).
+Condensed lookup for the API facade pattern. Each section stands on its own: one idea, one snippet, one table. For rationale, tradeoffs and bad-vs-good examples read [the handbook](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md).
 
 **API** is anything outside your program that your program must negotiate with. A **facade** wraps it so call sites never touch transport details.
 
@@ -38,7 +38,7 @@ async function getData(path: string, searchParams?: Record<string, string | numb
 }
 ```
 
-→ [README § Role](https://github.com/FrameMuse/api-facade/blob/main/README.md#role)
+→ [README § Role](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#role)
 
 ## Enhance fetch, do not replace it
 
@@ -70,7 +70,7 @@ function processResponse<T>(response: Response): Promise<T> {
 - Helpers are optional. Raw `fetch` stays available.
 - Do not lose `Request`/`Response`/`Headers` in the wrapper.
 
-→ [README § Enhancing fetch](https://github.com/FrameMuse/api-facade/blob/main/README.md#enhancing-fetch-instead-of-replacing-it)
+→ [README § Enhancing fetch](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#enhancing-fetch-instead-of-replacing-it)
 
 ## Type safety
 
@@ -87,7 +87,7 @@ Types are hints, not guarantees. The wire shape can differ at runtime.
 - Do not mark every property nullish to silence mismatches.
 - Pair types with runtime validation only where it matters.
 
-→ [README § Type Safety](https://github.com/FrameMuse/api-facade/blob/main/README.md#type-safety)
+→ [README § Type Safety](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#type-safety)
 
 ## Response validation
 
@@ -114,7 +114,7 @@ async function fetchUser(id: number): Promise<User> {
 - Treat a mismatch as a backend bug, not a reason to weaken types.
 - Rejecting requests on the client adds no security and blocks valid input.
 
-→ [README § Response Validation](https://github.com/FrameMuse/api-facade/blob/main/README.md#response-validation)
+→ [README § Response Validation](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#response-validation)
 
 ## Content type conversion
 
@@ -140,7 +140,7 @@ function toBody(data: any, contentType: string) {
 | `multipart/form-data` | `FormData` |
 | `blob` / binary | pass through |
 
-→ [README § Content Type Conversion](https://github.com/FrameMuse/api-facade/blob/main/README.md#content-type-conversion)
+→ [README § Content Type Conversion](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#content-type-conversion)
 
 ## Upload progress
 
@@ -166,7 +166,7 @@ await fetch(url, {
 
 - Resumable uploads need backend support. Do not promise them from the client alone.
 
-→ [README § File Upload Progress](https://github.com/FrameMuse/api-facade/blob/main/README.md#file-upload-progress)
+→ [README § File Upload Progress](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#file-upload-progress)
 
 ## Path params
 
@@ -184,7 +184,7 @@ resolvePath("/users/{id}", { id: 42 }) // /users/42
 - Always URL-encode.
 - Support both `{id}` and `:id` if your backend mixes styles.
 
-→ [README § Path Params](https://github.com/FrameMuse/api-facade/blob/main/README.md#path-params-resolving)
+→ [README § Path Params](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#path-params-resolving)
 
 ## Query building
 
@@ -200,7 +200,7 @@ function toQuery(params: Record<string, string | number | boolean | undefined>) 
 }
 ```
 
-→ [README § Search Query](https://github.com/FrameMuse/api-facade/blob/main/README.md#search-query-building)
+→ [README § Search Query](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#search-query-building)
 
 ## Sorting
 
@@ -229,7 +229,7 @@ function buildSort(fields: Array<{ field: string; direction: "asc" | "desc" }>) 
 - Use `qs` if it is already a dependency.
 - Always validate and whitelist sortable fields on the backend.
 
-→ [README § Sorting](https://github.com/FrameMuse/api-facade/blob/main/README.md#sorting-needs-review)
+→ [README § Sorting](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#sorting-needs-review)
 
 ## Filtering
 
@@ -253,7 +253,7 @@ for (const [key, value] of Object.entries(filters)) params.set(key, String(value
 - Document filterable fields per endpoint.
 - Prefer `POST` with a body for very long filter structures.
 
-→ [README § Filtering](https://github.com/FrameMuse/api-facade/blob/main/README.md#filtering-needs-review)
+→ [README § Filtering](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#filtering-needs-review)
 
 ## HTTP status handling
 
@@ -291,7 +291,7 @@ throw new HTTPError(`Unexpected status: ${response.status}`, response.status)
 - Do not duplicate status in the body.
 - Log status, URL and method together.
 
-→ [README § HTTP Status](https://github.com/FrameMuse/api-facade/blob/main/README.md#http-status-handling)
+→ [README § HTTP Status](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#http-status-handling)
 
 ## Error handling
 
@@ -314,7 +314,7 @@ class APIError extends Error {
 - Map backend error codes into an enum. Do not compare magic strings.
 - Attach metadata the consumer needs: retry-after, conflicting fields, validation details.
 
-→ [README § Error Handling](https://github.com/FrameMuse/api-facade/blob/main/README.md#error-handling)
+→ [README § Error Handling](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#error-handling)
 
 ## Notifications
 
@@ -344,7 +344,7 @@ catch (error) {
 - Critical errors need persistent UI, not only a toast.
 - Make messages actionable.
 
-→ [README § Notifications](https://github.com/FrameMuse/api-facade/blob/main/README.md#notifications)
+→ [README § Notifications](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#notifications)
 
 ## Localization
 
@@ -364,7 +364,7 @@ showToast(message, "error")
 - Send `Accept-Language` and keep client-side translations as fallback.
 - Put numbers, field names and counts in `metadata` for pluralization.
 
-→ [README § Localization](https://github.com/FrameMuse/api-facade/blob/main/README.md#localization)
+→ [README § Localization](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#localization)
 
 ## Body mocking
 
@@ -378,7 +378,7 @@ Replace invalid responses with schema-generated mock data during development.
 - Debug only. Never enable in production.
 - Requires schemas, so it pairs with response validation.
 
-→ [README § Body Mocking](https://github.com/FrameMuse/api-facade/blob/main/README.md#body-mocking)
+→ [README § Body Mocking](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#body-mocking)
 
 ## Common headers
 
@@ -390,7 +390,7 @@ Set repeated headers once in the facade.
 - Merge consumer-provided headers over defaults.
 - Provide `defaultHeaders()` plus a per-request override.
 
-→ [README § Common Headers](https://github.com/FrameMuse/api-facade/blob/main/README.md#common-headers)
+→ [README § Common Headers](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#common-headers)
 
 ## API Versioning
 
@@ -424,7 +424,7 @@ Pick one transport for the version and centralize it in the facade.
 - Surface `Deprecation` and `Sunset` headers in development.
 - Follow a timeline: deprecate, set sunset date, return 410, remove code.
 
-→ [README § Versioning](https://github.com/FrameMuse/api-facade/blob/main/README.md#api-versioning)
+→ [README § Versioning](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#api-versioning)
 
 ## Unwritten topics
 
@@ -432,12 +432,12 @@ These have outlines in the handbook but no full section yet. The core idea is en
 
 | Topic | Core idea |
 |---|---|
-| [Caching](https://github.com/FrameMuse/api-facade/blob/main/README.md#caching) | HTTP headers, ETag, 304, app cache, stale-while-revalidate, invalidate after mutations |
-| [Batching](https://github.com/FrameMuse/api-facade/blob/main/README.md#batching) | `POST /batch`, microtask flush, deduplicate concurrent calls |
-| [Interruptions](https://github.com/FrameMuse/api-facade/blob/main/README.md#interruptions) | `AbortController`, timeouts, partial streams, reconnect SSE |
-| [Offline](https://github.com/FrameMuse/api-facade/blob/main/README.md#offline-support--request-queuing) | `navigator.onLine`, persist queue, replay on reconnect, handle 409 |
-| [Retry](https://github.com/FrameMuse/api-facade/blob/main/README.md#retry-strategies) | idempotent only, 5xx and network errors, backoff with jitter, cap attempts |
-| [Auth](https://github.com/FrameMuse/api-facade/blob/main/README.md#authentication-patterns) | token lifecycle, single refresh then retry, API keys, OAuth, multi-tenant |
+| [Caching](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#caching) | HTTP headers, ETag, 304, app cache, stale-while-revalidate, invalidate after mutations |
+| [Batching](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#batching) | `POST /batch`, microtask flush, deduplicate concurrent calls |
+| [Interruptions](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#interruptions) | `AbortController`, timeouts, partial streams, reconnect SSE |
+| [Offline](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#offline-support--request-queuing) | `navigator.onLine`, persist queue, replay on reconnect, handle 409 |
+| [Retry](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#retry-strategies) | idempotent only, 5xx and network errors, backoff with jitter, cap attempts |
+| [Auth](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#authentication-patterns) | token lifecycle, single refresh then retry, API keys, OAuth, multi-tenant |
 
 ## Naming styles
 
@@ -449,7 +449,7 @@ Pick the surface that matches API size.
 | Named | `api.user.fetch` | aliases read better |
 | Resource-sliced | `api.users.create` | surface is growing |
 
-→ [README § Naming](https://github.com/FrameMuse/api-facade/blob/main/README.md#api-recipes-collection)
+→ [README § Naming](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#api-recipes-collection)
 
 ## Recipes
 
@@ -457,15 +457,15 @@ Each folder under `recipes/` is a runnable implementation.
 
 | Recipe | Idea |
 |---|---|
-| [action-based](https://github.com/FrameMuse/api-facade/tree/main/recipes/action-based) | calls as plain objects, pairs with reducers |
-| [builder](https://github.com/FrameMuse/api-facade/tree/main/recipes/builder) | fluent builder for request construction |
-| [generated-methods](https://github.com/FrameMuse/api-facade/tree/main/recipes/generated-methods) | one typed function per endpoint from a spec |
-| [light](https://github.com/FrameMuse/api-facade/tree/main/recipes/light) | minimal hand-written facade, good starting point |
-| [naive](https://github.com/FrameMuse/api-facade/tree/main/recipes/naive) | baseline: hard-coded URLs and `fetch` |
-| [resource-sliced](https://github.com/FrameMuse/api-facade/tree/main/recipes/resource-sliced) | methods grouped by resource |
-| [spec-based](https://github.com/FrameMuse/api-facade/tree/main/recipes/spec-based) | runtime construction from a local OpenAPI doc |
+| [action-based](https://github.com/FrameMuse/rest-api-facade/tree/main/recipes/action-based) | calls as plain objects, pairs with reducers |
+| [builder](https://github.com/FrameMuse/rest-api-facade/tree/main/recipes/builder) | fluent builder for request construction |
+| [generated-methods](https://github.com/FrameMuse/rest-api-facade/tree/main/recipes/generated-methods) | one typed function per endpoint from a spec |
+| [light](https://github.com/FrameMuse/rest-api-facade/tree/main/recipes/light) | minimal hand-written facade, good starting point |
+| [naive](https://github.com/FrameMuse/rest-api-facade/tree/main/recipes/naive) | baseline: hard-coded URLs and `fetch` |
+| [resource-sliced](https://github.com/FrameMuse/rest-api-facade/tree/main/recipes/resource-sliced) | methods grouped by resource |
+| [spec-based](https://github.com/FrameMuse/rest-api-facade/tree/main/recipes/spec-based) | runtime construction from a local OpenAPI doc |
 
-→ [README § Recipes](https://github.com/FrameMuse/api-facade/blob/main/README.md#recipes)
+→ [README § Recipes](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#recipes)
 
 ## Testing Strategies
 
@@ -480,7 +480,7 @@ The facade is the seam worth testing.
 
 No full section yet.
 
-→ [README § Testing](https://github.com/FrameMuse/api-facade/blob/main/README.md#testing-strategies)
+→ [README § Testing](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#testing-strategies)
 
 ## Migration Guide
 
@@ -494,7 +494,7 @@ Move incrementally from ad-hoc calls to a facade.
 
 No full section yet.
 
-→ [README § Migration](https://github.com/FrameMuse/api-facade/blob/main/README.md#migration-guide)
+→ [README § Migration](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#migration-guide)
 
 ## Advancing Further
 
@@ -505,4 +505,4 @@ When the app grows, add layers around the facade.
 - A resource manager such as TanStack Query handles caching and mutations.
 - Keep the facade copy-pasteable into another project.
 
-→ [README § Advancing](https://github.com/FrameMuse/api-facade/blob/main/README.md#advancing-further)
+→ [README § Advancing](https://github.com/FrameMuse/rest-api-facade/blob/main/README.md#advancing-further)
